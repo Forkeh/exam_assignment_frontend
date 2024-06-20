@@ -2,12 +2,13 @@ import axios, { AxiosResponse } from "axios";
 import { IPagination } from "@/models/IPagination";
 import { API_URL } from "@/config/settings";
 import { IParticipant } from "@/models/IParticipant";
+import { IParticipantFull } from "@/models/IParticipantFull";
 
 async function getAllParticipants(queryParams?: string): Promise<AxiosResponse<IPagination<IParticipant>, unknown>> {
     return await axios.get(`${API_URL}/participants?` + queryParams);
 }
 
-async function getAllParticipantsNoPagination(): Promise<AxiosResponse<IParticipant[], unknown>> {
+async function getAllParticipantsNoPagination(): Promise<AxiosResponse<IParticipantFull[], unknown>> {
     return await axios.get(`${API_URL}/participants/all`);
 }
 

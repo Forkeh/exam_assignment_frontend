@@ -10,13 +10,11 @@ import { toast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IParticipant } from "@/models/IParticipant";
-import { getAllDisciplines } from "@/services/DisciplinesApi";
-import { IDiscipline } from "@/models/IDiscipline";
 import { getAllParticipantsNoPagination } from "@/services/ParticipantApi";
 import { IResult } from "@/models/IResult";
 import { IResultRequest } from "@/models/IResultRequest";
 import { createResult, updateResult } from "@/services/ResultApi";
+import { IParticipantFull } from "@/models/IParticipantFull";
 
 const FormSchema = z.object({
     discipline: z.string().min(1, {
@@ -32,7 +30,7 @@ const FormSchema = z.object({
 
 export default function ResultsFormPage() {
     // const [disciplines, setDisciplines] = useState<IDiscipline[]>([]);
-    const [participants, setParticipants] = useState<IParticipant[] | null>(null);
+    const [participants, setParticipants] = useState<IParticipantFull[] | null>(null);
     const result = useLocation().state as IResult | null;
     const navigate = useNavigate();
 
@@ -76,10 +74,13 @@ export default function ResultsFormPage() {
     const participantSelected = watch("participant");
     const disciplineSelected = watch("discipline");
 
-    const selectedParticipant = participants?.find((participant) => participant.id === Number(participantSelected));
-    console.log(selectedParticipant);
+    const selectedParticipant = participants?.find(
+        (participant) => participant.id === Number(participantSelected)
+    );
 
-    const selectedParticipantDisciplines = selectedParticipant?.disciplines as unknown;
+    const selectedParticipantDisciplines = selectedParticipant?.disciplines;
+    console.log(selectedParticipantDisciplines);
+    
 
     console.log("participant " + participantSelected);
     console.log("selected " + disciplineSelected);
