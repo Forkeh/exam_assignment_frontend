@@ -22,7 +22,7 @@ export default function ResultsPage() {
     });
     const [filterBy, setFilter] = useState("");
     const [filterValue, setFilterValue] = useState("");
-    const [search, setSearch] = useState(""); //TODO: Remove search
+    const [search, setSearch] = useState(""); //TODO: Remove search?
 
     console.log(results);
 

@@ -93,14 +93,9 @@ export default function ResultsFormPage() {
             result: data.result,
         } as IResultRequest;
 
-        console.log(newResult);
-        console.log("HERE! 😀");
-        
         console.log(result);
-        
-        if (result) {
-            console.log("update 😀");
 
+        if (result) {
             newResult.id = Number(result!.id);
             console.log(newResult);
 
@@ -112,7 +107,7 @@ export default function ResultsFormPage() {
                         title: "Result updated!",
                         description: `We have successfully updated the result ${data.result} for participant ${data.participant} in the system`,
                     });
-                    navigate("/");
+                    navigate("/results");
                     return;
                 })
                 .catch((error) => {
@@ -133,7 +128,7 @@ export default function ResultsFormPage() {
                         title: "Result created!",
                         description: `We have successfully created the result ${data.result} for participant ${data.participant} in the system`,
                     });
-                    navigate("/");
+                    navigate("/results");
                     return;
                 })
                 .catch(() => {
@@ -149,7 +144,7 @@ export default function ResultsFormPage() {
     return (
         <>
             <h2 className="text-3xl sm:text-5xl font-bold text-center text-pretty mb-5">
-                {result ? "Update" : "Create"} Result
+                {result ? "Edit" : "Create"} Result
             </h2>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
@@ -224,7 +219,7 @@ export default function ResultsFormPage() {
                                 <FormItem>
                                     <FormLabel>Result</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Type Result..." {...field} />
+                                        <Input placeholder="Type Result..." type="number" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -232,7 +227,7 @@ export default function ResultsFormPage() {
                         />
                     )}
 
-                    <Button type="submit">{result ? "Update" : "Create"}</Button>
+                    <Button type="submit">{result ? "Edit" : "Create"}</Button>
                 </form>
             </Form>
         </>

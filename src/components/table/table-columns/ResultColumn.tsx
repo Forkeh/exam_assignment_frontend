@@ -1,15 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle, FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { MdDeleteForever } from "react-icons/md";
 import { toast } from "@/components/ui/use-toast";
 import { IResult } from "@/models/IResult";
 import { resultConversion } from "@/utils/resultConversion";
@@ -48,12 +40,26 @@ export const ResultColumns: ColumnDef<IResult>[] = [
     },
     {
         accessorKey: "edit",
-        header: "Details",
+        header: "Edit",
+        cell: ({ row }) => {
+            const result = row.original as IResult;
+            return (
+                <div className="flex  hover:text-orange-500 transition-all cursor-pointer">
+                    <Link to={`/resultForm`} state={result}>
+                        <FaEdit size={22} />
+                    </Link>
+                </div>
+            );
+        },
+    },
+    {
+        accessorKey: "delete",
+        header: "Delete",
         cell: ({ row }) => {
             const result = row.original as IResult;
 
             function handleDelete() {
-                console.log("delete participant with id: ", result.id);
+                console.log("delete result with id: ", result.id);
 
                 if (!result.id) {
                     return;
@@ -80,26 +86,8 @@ export const ResultColumns: ColumnDef<IResult>[] = [
             }
 
             return (
-                <div className="flex  hover:text-orange-500 transition-all">
-                    <Dialog>
-                        <DialogTrigger>
-                            <FaInfoCircle size={22} />
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>{result.discipline.name}</DialogTitle>
-                                <DialogDescription></DialogDescription>
-                            </DialogHeader>
-                            <div>
-                                <Link to={`/resultForm`} state={result}>
-                                    <Button>Edit</Button>
-                                </Link>
-                                <DialogTrigger asChild>
-                                    <Button onClick={handleDelete}>Delete</Button>
-                                </DialogTrigger>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
+                <div className="flex  hover:text-orange-500 transition-all cursor-pointer">
+                    <MdDeleteForever size={22} onClick={handleDelete} />
                 </div>
             );
         },
