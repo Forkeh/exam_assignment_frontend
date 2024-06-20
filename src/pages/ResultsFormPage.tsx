@@ -15,12 +15,8 @@ import { getAllDisciplines } from "@/services/DisciplinesApi";
 import { IDiscipline } from "@/models/IDiscipline";
 import { getAllParticipantsNoPagination } from "@/services/ParticipantApi";
 import { IResult } from "@/models/IResult";
-
-interface IResultRequest {
-    disciplineId: string;
-    participantId: string;
-    result: string;
-}
+import { IResultRequest } from "@/models/IResultRequest";
+import { createResult, updateResult } from "@/services/ResultApi";
 
 const FormSchema = z.object({
     discipline: z.string().min(1, {
@@ -35,7 +31,7 @@ const FormSchema = z.object({
 });
 
 export default function ResultsFormPage() {
-    const [disciplines, setDisciplines] = useState<IDiscipline[]>([]);
+    // const [disciplines, setDisciplines] = useState<IDiscipline[]>([]);
     const [participants, setParticipants] = useState<IParticipant[] | null>(null);
     const result = useLocation().state as IResult | null;
     const navigate = useNavigate();
@@ -43,17 +39,17 @@ export default function ResultsFormPage() {
     console.log(result);
     console.log(participants);
 
-    useEffect(() => {
-        getAllDisciplines()
-            .then((res) => setDisciplines(res.data))
-            .catch(() => {
-                toast({
-                    title: "Oh no! Something went wrong!",
-                    description: `We could not fetch the disciplines from the server. Please try again later.`,
-                    variant: "destructive",
-                });
-            });
-    }, []);
+    // useEffect(() => {
+    //     getAllDisciplines()
+    //         .then((res) => setDisciplines(res.data))
+    //         .catch(() => {
+    //             toast({
+    //                 title: "Oh no! Something went wrong!",
+    //                 description: `We could not fetch the disciplines from the server. Please try again later.`,
+    //                 variant: "destructive",
+    //             });
+    //         });
+    // }, []);
 
     useEffect(() => {
         getAllParticipantsNoPagination()
@@ -70,13 +66,22 @@ export default function ResultsFormPage() {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            discipline: String(result?.discipline.id) || "1",
-            participant: String(result?.participant.id) || "1",
+            discipline: result ? String(result?.discipline.id) : "",
+            participant: result ? String(result?.participant.id) : "",
             result: result?.result || "",
         },
     });
 
-    const disciplineSelected = form.watch("discipline", "");
+    const { watch } = form;
+    const participantSelected = watch("participant");
+    const disciplineSelected = watch("discipline");
+
+    const selectedParticipant = participants?.find((participant) => participant.id === Number(participantSelected));
+    console.log(selectedParticipant);
+
+    const selectedParticipantDisciplines = selectedParticipant?.disciplines as unknown;
+
+    console.log("participant " + participantSelected);
     console.log("selected " + disciplineSelected);
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -92,50 +97,50 @@ export default function ResultsFormPage() {
 
         console.log(newResult);
 
-        // if (participant) {
-        //     newParticipant.id = Number(participant!.id);
-        //     console.log(newParticipant);
+        if (result) {
+            newResult.id = Number(newResult!.id);
+            console.log(newResult);
 
-        //     // PUT
+            // PUT
 
-        //     updateParticipant(newParticipant as IParticipant)
-        //         .then(() => {
-        //             toast({
-        //                 title: "Participant updated!",
-        //                 description: `We have successfully updated the participant ${data.name} in the system`,
-        //             });
-        //             navigate("/");
-        //             return;
-        //         })
-        //         .catch((error) => {
-        //             console.log(error.response.data.message);
+            updateResult(newResult as IResultRequest)
+                .then(() => {
+                    toast({
+                        title: "Result updated!",
+                        description: `We have successfully updated the result ${data.result} for participant ${data.participant} in the system`,
+                    });
+                    navigate("/");
+                    return;
+                })
+                .catch((error) => {
+                    console.log(error.response.data.message);
 
-        //             toast({
-        //                 title: "Oh no! Something went wrong!",
-        //                 description: `${error.response.data.message}`,
-        //                 variant: "destructive",
-        //             });
-        //         });
-        // } else {
-        // POST
-
-        createResult(newResult as IResultRequest)
-            .then(() => {
-                toast({
-                    title: "Result created!",
-                    description: `We have successfully created the result ${data.result} for participant ${data.participant} in the system`,
+                    toast({
+                        title: "Oh no! Something went wrong!",
+                        description: `${error.response.data.message}`,
+                        variant: "destructive",
+                    });
                 });
-                navigate("/");
-                return;
-            })
-            .catch(() => {
-                toast({
-                    title: "Oh no!  Something went wrong!",
-                    description: `We could not create the result in the system. Please try again later.`,
-                    variant: "destructive",
+        } else {
+            // POST
+
+            createResult(newResult as IResultRequest)
+                .then(() => {
+                    toast({
+                        title: "Result created!",
+                        description: `We have successfully created the result ${data.result} for participant ${data.participant} in the system`,
+                    });
+                    navigate("/");
+                    return;
+                })
+                .catch(() => {
+                    toast({
+                        title: "Oh no!  Something went wrong!",
+                        description: `We could not create the result in the system. Please try again later.`,
+                        variant: "destructive",
+                    });
                 });
-            });
-        // }
+        }
     }
 
     return (
@@ -147,38 +152,16 @@ export default function ResultsFormPage() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
                     <FormField
                         control={form.control}
-                        name="discipline"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Discipline</FormLabel>
-                                <FormControl>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Choose discipline" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                {disciplines?.map((discipline) => (
-                                                    <SelectItem key={discipline.id} value={String(discipline.id)}>
-                                                        {discipline.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
                         name="participant"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Participant</FormLabel>
                                 <FormControl>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={result ? true : false}
+                                    >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Choose participant" />
                                         </SelectTrigger>
@@ -197,6 +180,39 @@ export default function ResultsFormPage() {
                             </FormItem>
                         )}
                     />
+                    {participantSelected && (
+                        <FormField
+                            control={form.control}
+                            name="discipline"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Discipline</FormLabel>
+                                    <FormControl>
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                            disabled={result ? true : false}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Choose discipline" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    {selectedParticipantDisciplines?.map((discipline) => (
+                                                        <SelectItem key={discipline.id} value={String(discipline.id)}>
+                                                            {discipline.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    )}
+
                     {disciplineSelected && (
                         <FormField
                             control={form.control}
