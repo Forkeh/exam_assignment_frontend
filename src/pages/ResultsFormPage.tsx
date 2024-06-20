@@ -13,33 +13,29 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { IParticipant } from "@/models/IParticipant";
 import { getAllDisciplines } from "@/services/DisciplinesApi";
 import { IDiscipline } from "@/models/IDiscipline";
-import { Checkbox } from "@radix-ui/react-checkbox";
-import { createParticipant, updateParticipant } from "@/services/ParticipantApi";
+import { getAllParticipantsNoPagination } from "@/services/ParticipantApi";
+import { IResult } from "@/models/IResult";
 
 const FormSchema = z.object({
-    name: z.string().min(2, {
+    discipline: z.string().min(1, {
         message: "Name must be at least 2 characters.",
     }),
-    gender: z.string().min(2, {
-        message: "Gender must be selected.",
+    participant: z.string().min(1, {
+        message: "Participant must be selected.",
     }),
-    age: z.coerce.number().int().min(6, {
-        message: "Age must be at least 6.",
-    }),
-    club: z.string().min(1, {
-        message: "Club must be at least 1.",
-    }),
-    disciplines: z.array(z.number()).refine((value) => value.some((item) => item), {
-        message: "You have to select at least one discipline.",
+    result: z.string().min(1, {
+        message: "Result must be at least 1.",
     }),
 });
 
-export default function ParticipantsFormPage() {
+export default function ResultsFormPage() {
     const [disciplines, setDisciplines] = useState<IDiscipline[]>([]);
-    const participant = useLocation().state as IParticipant | null;
+    const [participants, setParticipants] = useState<IParticipant[] | null>(null);
+    const result = useLocation().state as IResult | null;
     const navigate = useNavigate();
 
-    console.log(participant);
+    console.log(result);
+    console.log(participants);
 
     useEffect(() => {
         getAllDisciplines()
@@ -53,14 +49,24 @@ export default function ParticipantsFormPage() {
             });
     }, []);
 
+    useEffect(() => {
+        getAllParticipantsNoPagination()
+            .then((res) => setParticipants(res.data))
+            .catch(() => {
+                toast({
+                    title: "Oh no! Something went wrong!",
+                    description: `We could not fetch the participants from the server. Please try again later.`,
+                    variant: "destructive",
+                });
+            });
+    }, []);
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            name: participant?.name || "",
-            gender: participant?.gender || "MALE",
-            age: participant?.age || 0,
-            club: participant?.club || "",
-            disciplines: disciplines.map((d) => d.id) || [],
+            discipline: String(result?.discipline.id) || "",
+            participant: String(result?.participant.id) || "",
+            result: result?.result || "",
         },
     });
 
@@ -69,95 +75,87 @@ export default function ParticipantsFormPage() {
 
         console.log(data);
 
-        const newParticipant = {
-            name: data.name,
-            gender: data.gender,
-            age: Number(data.age),
-            club: data.club,
-            disciplines: data.disciplines,
-        } as IParticipant;
+        // const newParticipant = {
+        //     name: data.name,
+        //     gender: data.gender,
+        //     age: Number(data.age),
+        //     club: data.club,
+        //     disciplines: data.disciplines,
+        // } as IParticipant;
 
-        // console.log(newParticipant);
+        // // console.log(newParticipant);
 
-        if (participant) {
-            newParticipant.id = Number(participant!.id);
-            console.log(newParticipant);
+        // if (participant) {
+        //     newParticipant.id = Number(participant!.id);
+        //     console.log(newParticipant);
 
-            // PUT
+        //     // PUT
 
-            updateParticipant(newParticipant as IParticipant)
-                .then(() => {
-                    toast({
-                        title: "Participant updated!",
-                        description: `We have successfully updated the participant ${data.name} in the system`,
-                    });
-                    navigate("/");
-                    return;
-                })
-                .catch((error) => {
-                    console.log(error.response.data.message);
+        //     updateParticipant(newParticipant as IParticipant)
+        //         .then(() => {
+        //             toast({
+        //                 title: "Participant updated!",
+        //                 description: `We have successfully updated the participant ${data.name} in the system`,
+        //             });
+        //             navigate("/");
+        //             return;
+        //         })
+        //         .catch((error) => {
+        //             console.log(error.response.data.message);
 
-                    toast({
-                        title: "Oh no! Something went wrong!",
-                        description: `${error.response.data.message}`,
-                        variant: "destructive",
-                    });
-                });
-        } else {
-            // POST
+        //             toast({
+        //                 title: "Oh no! Something went wrong!",
+        //                 description: `${error.response.data.message}`,
+        //                 variant: "destructive",
+        //             });
+        //         });
+        // } else {
+        //     // POST
 
-            createParticipant(newParticipant as IParticipant)
-                .then(() => {
-                    toast({
-                        title: "Participant created!",
-                        description: `We have successfully created the participant ${data.name} in the system.`,
-                    });
-                    navigate("/");
-                    return;
-                })
-                .catch(() => {
-                    toast({
-                        title: "Oh no!  Something went wrong!",
-                        description: `We could not create the participant ${data.name} in the system. Please try again later.`,
-                        variant: "destructive",
-                    });
-                });
-        }
+        //     createParticipant(newParticipant as IParticipant)
+        //         .then(() => {
+        //             toast({
+        //                 title: "Participant created!",
+        //                 description: `We have successfully created the participant ${data.name} in the system.`,
+        //             });
+        //             navigate("/");
+        //             return;
+        //         })
+        //         .catch(() => {
+        //             toast({
+        //                 title: "Oh no!  Something went wrong!",
+        //                 description: `We could not create the participant ${data.name} in the system. Please try again later.`,
+        //                 variant: "destructive",
+        //             });
+        //         });
+        // }
     }
 
     return (
         <>
-            <h2 className="text-3xl sm:text-5xl font-bold text-center text-pretty mb-5">{participant ? "Update" : "Create"} Participant</h2>
+            <h2 className="text-3xl sm:text-5xl font-bold text-center text-pretty mb-5">
+                {result ? "Update" : "Create"} Result
+            </h2>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
                     <FormField
                         control={form.control}
-                        name="name"
+                        name="discipline"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Name</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Name of the participant" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="gender"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Gender</FormLabel>
+                                <FormLabel>Discipline</FormLabel>
                                 <FormControl>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Choose gender" />
+                                            <SelectValue placeholder="Choose discipline" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectItem value="MALE">Male</SelectItem>
-                                                <SelectItem value="FEMALE">Female</SelectItem>
+                                                {disciplines?.map((discipline) => (
+                                                    <SelectItem key={discipline.id} value={String(discipline.id)}>
+                                                        {discipline.name}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
@@ -167,6 +165,45 @@ export default function ParticipantsFormPage() {
                         )}
                     />
                     <FormField
+                        control={form.control}
+                        name="participant"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Participant</FormLabel>
+                                <FormControl>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Choose discipline" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                {participants?.map((participant) => (
+                                                    <SelectItem key={participant.id} value={String(participant.id)}>
+                                                        {participant.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="result"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Result</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Type Result..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    {/* <FormField
                         control={form.control}
                         name="age"
                         render={({ field }) => (
@@ -236,8 +273,8 @@ export default function ParticipantsFormPage() {
                                 <FormMessage />
                             </FormItem>
                         )}
-                    />
-                    <Button type="submit">{participant ? "Update" : "Create"}</Button>
+                    /> */}
+                    <Button type="submit">{result ? "Update" : "Create"}</Button>
                 </form>
             </Form>
         </>

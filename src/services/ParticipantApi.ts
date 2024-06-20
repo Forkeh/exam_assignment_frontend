@@ -3,8 +3,12 @@ import { IPagination } from "@/models/IPagination";
 import { API_URL } from "@/config/settings";
 import { IParticipant } from "@/models/IParticipant";
 
-async function getAllParticipants(queryParams: string): Promise<AxiosResponse<IPagination<IParticipant>, unknown>> {
+async function getAllParticipants(queryParams?: string): Promise<AxiosResponse<IPagination<IParticipant>, unknown>> {
     return await axios.get(`${API_URL}/participants?` + queryParams);
+}
+
+async function getAllParticipantsNoPagination(): Promise<AxiosResponse<IParticipant[], unknown>> {
+    return await axios.get(`${API_URL}/participants/all`);
 }
 
 async function createParticipant(data: IParticipant): Promise<AxiosResponse<IParticipant, unknown>> {
@@ -19,4 +23,4 @@ async function deleteParticipant(id: number): Promise<AxiosResponse<IParticipant
     return await axios.delete(`${API_URL}/participants/${id}`);
 }
 
-export { getAllParticipants, deleteParticipant, createParticipant, updateParticipant };
+export { getAllParticipants, getAllParticipantsNoPagination, deleteParticipant, createParticipant, updateParticipant };

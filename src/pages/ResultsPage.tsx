@@ -5,7 +5,6 @@ import DataTable, { PaginationSize } from "@/components/table/DataTable.tsx";
 import { Button } from "@/components/ui/button";
 import { IPagination } from "@/models/IPagination";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { IResult } from "@/models/IResult";
 import { getAllResults } from "@/services/ResultApi";
@@ -15,7 +14,7 @@ export default function ResultsPage() {
     const [results, setResults] = useState<IPagination<IResult> | null>(null);
     const [pagination, setPagination] = useState<PaginationSize>({
         pageIndex: 0, //initial page index
-        pageSize: 5, //default page size
+        pageSize: 10, //default page size
     });
     const [sort, setSort] = useState({
         sortBy: "id",
@@ -23,7 +22,7 @@ export default function ResultsPage() {
     });
     const [filterBy, setFilter] = useState("");
     const [filterValue, setFilterValue] = useState("");
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState(""); //TODO: Remove search
 
     console.log(results);
 
@@ -189,8 +188,8 @@ export default function ResultsPage() {
                                     </Select>
                                 )}
                             </div>
-                            <Link to={"participantForm"}>
-                                <Button className="hover:bg-slate-500">Add Participant</Button>
+                            <Link to={"/resultForm"}>
+                                <Button className="hover:bg-slate-500">Add Result</Button>
                             </Link>
                         </div>
                         <motion.div

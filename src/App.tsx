@@ -5,6 +5,7 @@ import ErrorPage from "./pages/ErrorPage";
 import ParticipantsPage from "./pages/ParticipantsPage";
 import ResultsPage from "./pages/ResultsPage";
 import ParticipantsFormPage from "./pages/ParticipantsFormPage";
+import ResultsFormPage from "./pages/ResultsFormPage";
 
 function App() {
     return <RouterProvider router={router} />;
@@ -25,12 +26,12 @@ const router = createBrowserRouter([
                 element: <ResultsPage />,
             },
             {
-                path: "/path2",
-                element: <div>Path 2</div>,
-            },
-            {
                 path: "/participantForm",
                 element: <ParticipantsFormPage />,
+            },
+            {
+                path: "/resultForm",
+                element: <ResultsFormPage />,
             },
         ],
     },
