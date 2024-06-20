@@ -74,13 +74,10 @@ export default function ResultsFormPage() {
     const participantSelected = watch("participant");
     const disciplineSelected = watch("discipline");
 
-    const selectedParticipant = participants?.find(
-        (participant) => participant.id === Number(participantSelected)
-    );
+    const selectedParticipant = participants?.find((participant) => participant.id === Number(participantSelected));
 
     const selectedParticipantDisciplines = selectedParticipant?.disciplines;
     console.log(selectedParticipantDisciplines);
-    
 
     console.log("participant " + participantSelected);
     console.log("selected " + disciplineSelected);
@@ -88,7 +85,7 @@ export default function ResultsFormPage() {
     function onSubmit(data: z.infer<typeof FormSchema>) {
         console.log("onSubmit");
 
-        console.log(data);
+        // console.log(data);
 
         const newResult = {
             disciplineId: data.discipline,
@@ -97,9 +94,14 @@ export default function ResultsFormPage() {
         } as IResultRequest;
 
         console.log(newResult);
-
+        console.log("HERE! 😀");
+        
+        console.log(result);
+        
         if (result) {
-            newResult.id = Number(newResult!.id);
+            console.log("update 😀");
+
+            newResult.id = Number(result!.id);
             console.log(newResult);
 
             // PUT
