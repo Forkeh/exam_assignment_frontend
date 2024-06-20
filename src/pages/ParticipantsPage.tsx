@@ -55,6 +55,8 @@ export default function ParticipantsPage() {
                 });
             });
     }, [pagination, sort, search, filterBy, filterValue]);
+
+    
     return (
         <>
             <div className="flex flex-col gap-4">
