@@ -9,15 +9,15 @@ export default function Navbar() {
                       return `text-xl font-semibold ${isActive ? "text-white" : "text-black"}`;
                   }}
               >
-                  Home
+                  Participants
               </NavLink>
               <NavLink
-                  to={"/path1"}
+                  to={"/results"}
                   className={({ isActive }) => {
                       return `text-xl font-semibold ${isActive ? "text-white" : "text-black"}`;
                   }}
               >
-                  Path1
+                  Results
               </NavLink>
               <NavLink
                   to={"/path2"}

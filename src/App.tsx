@@ -2,7 +2,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Loader from "./components/ui/Loader";
 import PageLayout from "./pages/PageLayout";
 import ErrorPage from "./pages/ErrorPage";
-import HomePage from "./pages/HomePage";
+import ParticipantsPage from "./pages/ParticipantsPage";
+import ResultsPage from "./pages/ResultsPage";
 
 function App() {
     return <RouterProvider router={router} />;
@@ -16,11 +17,11 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "/",
-                element: <HomePage/>,
+                element: <ParticipantsPage />,
             },
             {
-                path: "/path1",
-                element: <div>Path 1</div>,
+                path: "/results",
+                element: <ResultsPage />,
             },
             {
                 path: "/path2",
