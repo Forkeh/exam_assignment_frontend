@@ -202,11 +202,7 @@ export default function ResultsPage() {
                                 opacity: 1,
                             }}
                         >
-                            <DataTable
-                                columns={ResultColumns}
-                                data={results}
-                                pagination={pagination}
-                            />
+                            <DataTable columns={ResultColumns} data={results.content} pagination={pagination} />
                         </motion.div>
                         <div className="flex justify-evenly">
                             <Button
