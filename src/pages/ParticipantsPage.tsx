@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { ParticipantColumns } from "@/components/table/table-columns/ParticipantColumn";
-import { DataTable2 } from "@/components/table/DataTable2";
 
 export default function ParticipantsPage() {
     const [participants, setParticipants] = useState<IPagination<IParticipant> | null>(null);
@@ -22,7 +21,8 @@ export default function ParticipantsPage() {
         sortBy: "id",
         sortDir: "ASC",
     });
-    const [filter, setFilter] = useState("");
+    const [filterBy, setFilter] = useState("");
+    const [filterValue, setFilterValue] = useState("");
     const [search, setSearch] = useState("");
 
     console.log(participants);
@@ -35,7 +35,10 @@ export default function ParticipantsPage() {
             ...sort,
         });
 
-        if (filter != "none") queryParams.append("filterBy", filter);
+        if (filterBy != "none" && filterValue != "") {
+            queryParams.append("filterBy", filterBy);
+            queryParams.append("filterValue", filterValue);
+        }
         if (search) queryParams.append("searchBy", search);
 
         console.log(queryParams);
@@ -51,11 +54,11 @@ export default function ParticipantsPage() {
                     variant: "destructive",
                 });
             });
-    }, [pagination, sort, filter, search]);
+    }, [pagination, sort, search, filterBy, filterValue]);
     return (
         <>
             <div className="flex flex-col gap-4">
-                <h2 className="text-white text-3xl sm:text-5xl font-bold text-center text-pretty mb-5">Produkter</h2>
+                <h2 className="text-3xl sm:text-5xl font-bold text-center text-pretty mb-5">Participants</h2>
                 {participants && (
                     <>
                         <div className="flex justify-between">
@@ -76,13 +79,13 @@ export default function ParticipantsPage() {
                                         }}
                                     >
                                         <SelectTrigger className="w-[140px] bg-gray-100">
-                                            <SelectValue placeholder="Sorter efter" />
+                                            <SelectValue placeholder="Sort By" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="id">ID</SelectItem>
-                                            <SelectItem value="name">Navn</SelectItem>
-                                            <SelectItem value="price">Pris</SelectItem>
-                                            <SelectItem value="stock">Antal</SelectItem>
+                                            <SelectItem value="name">Name</SelectItem>
+                                            <SelectItem value="gender">Gender</SelectItem>
+                                            <SelectItem value="club">Club</SelectItem>
                                         </SelectContent>
                                     </Select>
 
@@ -105,7 +108,6 @@ export default function ParticipantsPage() {
 
                                 <Select
                                     onValueChange={(value) => {
-                                        setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
                                         setFilter(value);
                                     }}
                                 >
@@ -114,19 +116,57 @@ export default function ParticipantsPage() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="none">Ingen</SelectItem>
-                                        <SelectItem value="Snacks">Snacks</SelectItem>
-                                        <SelectItem value="Alkohol">Alkohol</SelectItem>
-                                        <SelectItem value="Drikkevarer">Drikkevarer</SelectItem>
-                                        <SelectItem value="Andet">Andet</SelectItem>
+                                        <SelectItem value="gender">Gender</SelectItem>
+                                        <SelectItem value="club">Club</SelectItem>
+                                        <SelectItem value="discipline">Discipline</SelectItem>
                                     </SelectContent>
                                 </Select>
+
+                                {filterBy === "gender" && (
+                                    <Select
+                                        defaultValue="MALE"
+                                        onValueChange={(value) => {
+                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
+                                            setFilterValue(value);
+                                        }}
+                                    >
+                                        <SelectTrigger className="w-[160px] bg-gray-100">
+                                            <SelectValue placeholder="Filter by" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="MALE">Male</SelectItem>
+                                            <SelectItem value="FEMALE">Female</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                                {filterBy === "club" && (
+                                    <Select
+                                        defaultValue="Tigers Club"
+                                        onValueChange={(value) => {
+                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
+                                            setFilterValue(value);
+                                        }}
+                                    >
+                                        <SelectTrigger className="w-[160px] bg-gray-100">
+                                            <SelectValue placeholder="Filter by" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="Tigers Club">Tigers Club</SelectItem>
+                                            <SelectItem value="Bears Club">Bears Club</SelectItem>
+                                            <SelectItem value="Lions Club">Lions Club</SelectItem>
+                                            <SelectItem value="Wolves Club">Wolves Club</SelectItem>
+                                            <SelectItem value="Hawks Club">Hawks Club</SelectItem>
+                                            <SelectItem value="Eagles Club">Eagles Club</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
                             </div>
                             <Link to={"form"}>
                                 <Button className="hover:bg-slate-500">Add Participant</Button>
                             </Link>
                         </div>
                         <motion.div
-                            key={pagination.pageIndex + sort.sortBy + sort.sortDir + filter + search}
+                            key={pagination.pageIndex + sort.sortBy + sort.sortDir + filterBy + search}
                             initial={{
                                 opacity: 0,
                             }}
@@ -136,7 +176,7 @@ export default function ParticipantsPage() {
                         >
                             <DataTable
                                 columns={ParticipantColumns}
-                                data={participants}
+                                data={participants.content}
                                 pagination={pagination}
                             />
                         </motion.div>
@@ -154,9 +194,9 @@ export default function ParticipantsPage() {
                                 {"Back"}
                             </Button>
                             {participants?.totalPages ? (
-                                <p className="text-white">
+                                <p>
                                     {" "}
-                                    Side {pagination.pageIndex + 1} / {participants?.totalPages}{" "}
+                                    Page {pagination.pageIndex + 1} / {participants?.totalPages}{" "}
                                 </p>
                             ) : null}
                             <Button
