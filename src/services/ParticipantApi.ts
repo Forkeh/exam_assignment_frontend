@@ -11,8 +11,12 @@ async function createParticipant(data: IParticipant): Promise<AxiosResponse<IPar
     return await axios.post(`${API_URL}/participants`, data);
 }
 
+async function updateParticipant(data: IParticipant): Promise<AxiosResponse<IParticipant, unknown>> {
+    return await axios.put(`${API_URL}/participants/${data.id}`, data);
+}
+
 async function deleteParticipant(id: number): Promise<AxiosResponse<IParticipant, unknown>> {
     return await axios.delete(`${API_URL}/participants/${id}`);
 }
 
-export { getAllParticipants, deleteParticipant, createParticipant };
+export { getAllParticipants, deleteParticipant, createParticipant, updateParticipant };

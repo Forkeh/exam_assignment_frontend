@@ -14,7 +14,7 @@ import { IParticipant } from "@/models/IParticipant";
 import { getAllDisciplines } from "@/services/DisciplinesApi";
 import { IDiscipline } from "@/models/IDiscipline";
 import { Checkbox } from "@radix-ui/react-checkbox";
-import { createParticipant } from "@/services/ParticipantApi";
+import { createParticipant, updateParticipant } from "@/services/ParticipantApi";
 
 const FormSchema = z.object({
     name: z.string().min(2, {
@@ -32,9 +32,6 @@ const FormSchema = z.object({
     disciplines: z.array(z.number()).refine((value) => value.some((item) => item), {
         message: "You have to select at least one discipline.",
     }),
-    // disciplines: z.array(z.number()).min(1, {
-    //     message: "Must select at least 1 discipline.",
-    // }),
 });
 
 export default function ParticipantsFormPage() {
@@ -42,7 +39,6 @@ export default function ParticipantsFormPage() {
     const participant = useLocation().state as IParticipant | null;
     const navigate = useNavigate();
 
-    console.log(disciplines);
     console.log(participant);
 
     useEffect(() => {
@@ -69,6 +65,8 @@ export default function ParticipantsFormPage() {
     });
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
+        console.log("onSubmit");
+
         console.log(data);
 
         const newParticipant = {
@@ -79,52 +77,52 @@ export default function ParticipantsFormPage() {
             disciplines: data.disciplines,
         } as IParticipant;
 
-        console.log(newParticipant);
+        // console.log(newParticipant);
 
-        // if (participant) {
-        //     newParticipant.id = Number(participant!.id);
-        //     console.log(newParticipant);
+        if (participant) {
+            newParticipant.id = Number(participant!.id);
+            console.log(newParticipant);
 
-        //     // PUT
+            // PUT
 
-        //     updateEvent(newEvent as eventRequest)
-        //         .then(() => {
-        //             toast({
-        //                 title: "Event opdateret!",
-        //                 description: `Vi har opdateret ${data.name} eventet i systemet.`,
-        //             });
-        //             navigate("/");
-        //             return;
-        //         })
-        //         .catch((error) => {
-        //             console.log(error.response.data.message);
+            updateParticipant(newParticipant as IParticipant)
+                .then(() => {
+                    toast({
+                        title: "Participant updated!",
+                        description: `We have successfully updated the participant ${data.name} in the system`,
+                    });
+                    navigate("/");
+                    return;
+                })
+                .catch((error) => {
+                    console.log(error.response.data.message);
 
-        //             toast({
-        //                 title: "Åh nej! Noget gik galt!",
-        //                 description: `${error.response.data.message}`,
-        //                 variant: "destructive",
-        //             });
-        //         });
-        // } else {
-        //     // POST
-
-        createParticipant(newParticipant as IParticipant)
-            .then(() => {
-                toast({
-                    title: "Participant created!",
-                    description: `We have successfully created the participant ${data.name} in the system.`,
+                    toast({
+                        title: "Oh no! Something went wrong!",
+                        description: `${error.response.data.message}`,
+                        variant: "destructive",
+                    });
                 });
-                navigate("/");
-                return;
-            })
-            .catch(() => {
-                toast({
-                    title: "Oh no!  Something went wrong!",
-                    description: `We could not create the participant ${data.name} in the system. Please try again later.`,
-                    variant: "destructive",
+        } else {
+            // POST
+
+            createParticipant(newParticipant as IParticipant)
+                .then(() => {
+                    toast({
+                        title: "Participant created!",
+                        description: `We have successfully created the participant ${data.name} in the system.`,
+                    });
+                    navigate("/");
+                    return;
+                })
+                .catch(() => {
+                    toast({
+                        title: "Oh no!  Something went wrong!",
+                        description: `We could not create the participant ${data.name} in the system. Please try again later.`,
+                        variant: "destructive",
+                    });
                 });
-            });
-        // }
+        }
     }
 
     return (
