@@ -16,4 +16,8 @@ async function updateResult(data: IResultRequest): Promise<AxiosResponse<IResult
     return await axios.put(`${API_URL}/results/${data.id}`, data);
 }
 
-export { getAllResults, createResult, updateResult };
+async function deleteResult(id: number): Promise<AxiosResponse<IResult, unknown>> {
+    return await axios.delete(`${API_URL}/results/${id}`);
+}
+
+export { getAllResults, createResult, updateResult, deleteResult };

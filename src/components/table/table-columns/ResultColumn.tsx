@@ -5,6 +5,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { toast } from "@/components/ui/use-toast";
 import { IResult } from "@/models/IResult";
 import { resultConversion } from "@/utils/resultConversion";
+import { deleteResult } from "@/services/ResultApi";
 
 export const ResultColumns: ColumnDef<IResult>[] = [
     {
