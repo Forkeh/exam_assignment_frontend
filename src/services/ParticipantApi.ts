@@ -7,8 +7,12 @@ async function getAllParticipants(queryParams: string): Promise<AxiosResponse<IP
     return await axios.get(`${API_URL}/participants?` + queryParams);
 }
 
+async function createParticipant(data: IParticipant): Promise<AxiosResponse<IParticipant, unknown>> {
+    return await axios.post(`${API_URL}/participants`, data);
+}
+
 async function deleteParticipant(id: number): Promise<AxiosResponse<IParticipant, unknown>> {
     return await axios.delete(`${API_URL}/participants/${id}`);
 }
 
-export { getAllParticipants, deleteParticipant };
+export { getAllParticipants, deleteParticipant, createParticipant };

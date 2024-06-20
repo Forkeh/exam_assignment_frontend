@@ -4,5 +4,5 @@ export interface IParticipant {
     gender: string;
     age: number;
     club: string;
-    disciplines: Array<string>;
+    disciplines: Array<string | number>;
 }

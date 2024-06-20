@@ -14,6 +14,7 @@ import { IParticipant } from "@/models/IParticipant";
 import { getAllDisciplines } from "@/services/DisciplinesApi";
 import { IDiscipline } from "@/models/IDiscipline";
 import { Checkbox } from "@radix-ui/react-checkbox";
+import { createParticipant } from "@/services/ParticipantApi";
 
 const FormSchema = z.object({
     name: z.string().min(2, {
@@ -39,6 +40,7 @@ const FormSchema = z.object({
 export default function ParticipantsFormPage() {
     const [disciplines, setDisciplines] = useState<IDiscipline[]>([]);
     const participant = useLocation().state as IParticipant | null;
+    const navigate = useNavigate();
 
     console.log(disciplines);
     console.log(participant);
@@ -73,6 +75,8 @@ export default function ParticipantsFormPage() {
             name: data.name,
             gender: data.gender,
             age: Number(data.age),
+            club: data.club,
+            disciplines: data.disciplines,
         } as IParticipant;
 
         console.log(newParticipant);
@@ -104,22 +108,22 @@ export default function ParticipantsFormPage() {
         // } else {
         //     // POST
 
-        //     createEvent(newEvent as eventRequest)
-        //         .then(() => {
-        //             toast({
-        //                 title: "Event oprettet!",
-        //                 description: `Vi har oprettet ${data.name} eventet i systemet.`,
-        //             });
-        //             navigate("/");
-        //             return;
-        //         })
-        //         .catch(() => {
-        //             toast({
-        //                 title: "Åh nej! Noget gik galt!",
-        //                 description: `Måske eksisterer eventet allerede i systemet. Prøv igen på et senere tidspunkt.`,
-        //                 variant: "destructive",
-        //             });
-        //         });
+        createParticipant(newParticipant as IParticipant)
+            .then(() => {
+                toast({
+                    title: "Participant created!",
+                    description: `We have successfully created the participant ${data.name} in the system.`,
+                });
+                navigate("/");
+                return;
+            })
+            .catch(() => {
+                toast({
+                    title: "Oh no!  Something went wrong!",
+                    description: `We could not create the participant ${data.name} in the system. Please try again later.`,
+                    variant: "destructive",
+                });
+            });
         // }
     }
 
@@ -235,7 +239,6 @@ export default function ParticipantsFormPage() {
                         </FormItem>
                     )}
                 />
-                <Checkbox>Checkbox</Checkbox>
                 <Button type="submit">{participant ? "Update" : "Create"}</Button>
             </form>
         </Form>
