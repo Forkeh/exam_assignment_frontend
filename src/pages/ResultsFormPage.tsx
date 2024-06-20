@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,6 +15,12 @@ import { getAllDisciplines } from "@/services/DisciplinesApi";
 import { IDiscipline } from "@/models/IDiscipline";
 import { getAllParticipantsNoPagination } from "@/services/ParticipantApi";
 import { IResult } from "@/models/IResult";
+
+interface IResultRequest {
+    disciplineId: string;
+    participantId: string;
+    result: string;
+}
 
 const FormSchema = z.object({
     discipline: z.string().min(1, {
@@ -64,26 +70,27 @@ export default function ResultsFormPage() {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            discipline: String(result?.discipline.id) || "",
-            participant: String(result?.participant.id) || "",
+            discipline: String(result?.discipline.id) || "1",
+            participant: String(result?.participant.id) || "1",
             result: result?.result || "",
         },
     });
+
+    const disciplineSelected = form.watch("discipline", "");
+    console.log("selected " + disciplineSelected);
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         console.log("onSubmit");
 
         console.log(data);
 
-        // const newParticipant = {
-        //     name: data.name,
-        //     gender: data.gender,
-        //     age: Number(data.age),
-        //     club: data.club,
-        //     disciplines: data.disciplines,
-        // } as IParticipant;
+        const newResult = {
+            disciplineId: data.discipline,
+            participantId: data.participant,
+            result: data.result,
+        } as IResultRequest;
 
-        // // console.log(newParticipant);
+        console.log(newResult);
 
         // if (participant) {
         //     newParticipant.id = Number(participant!.id);
@@ -110,24 +117,24 @@ export default function ResultsFormPage() {
         //             });
         //         });
         // } else {
-        //     // POST
+        // POST
 
-        //     createParticipant(newParticipant as IParticipant)
-        //         .then(() => {
-        //             toast({
-        //                 title: "Participant created!",
-        //                 description: `We have successfully created the participant ${data.name} in the system.`,
-        //             });
-        //             navigate("/");
-        //             return;
-        //         })
-        //         .catch(() => {
-        //             toast({
-        //                 title: "Oh no!  Something went wrong!",
-        //                 description: `We could not create the participant ${data.name} in the system. Please try again later.`,
-        //                 variant: "destructive",
-        //             });
-        //         });
+        createResult(newResult as IResultRequest)
+            .then(() => {
+                toast({
+                    title: "Result created!",
+                    description: `We have successfully created the result ${data.result} for participant ${data.participant} in the system`,
+                });
+                navigate("/");
+                return;
+            })
+            .catch(() => {
+                toast({
+                    title: "Oh no!  Something went wrong!",
+                    description: `We could not create the result in the system. Please try again later.`,
+                    variant: "destructive",
+                });
+            });
         // }
     }
 
@@ -173,7 +180,7 @@ export default function ResultsFormPage() {
                                 <FormControl>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Choose discipline" />
+                                            <SelectValue placeholder="Choose participant" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
@@ -190,90 +197,22 @@ export default function ResultsFormPage() {
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="result"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Result</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Type Result..." {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    {/* <FormField
-                        control={form.control}
-                        name="age"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Age</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Name of the participant" type="number" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="club"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Club</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Name of the club" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="disciplines"
-                        render={() => (
-                            <FormItem>
-                                <div className="mb-4">
-                                    <FormLabel className="text-base">Disciplines</FormLabel>
-                                    <FormDescription>Select disciplines.</FormDescription>
-                                </div>
-                                {disciplines.map((item) => (
-                                    <FormField
-                                        key={item.id}
-                                        control={form.control}
-                                        name="disciplines"
-                                        render={({ field }) => {
-                                            return (
-                                                <FormItem
-                                                    key={item.id}
-                                                    className="flex flex-row items-start space-x-3 space-y-0"
-                                                >
-                                                    <FormControl>
-                                                        <Checkbox
-                                                            className="size-6 appearance-none w-4 h-4 border-2 border-blue-500 rounded-sm bg-white checked:bg-blue-800 checked:border-0"
-                                                            checked={field.value?.includes(item.id)}
-                                                            onCheckedChange={(checked) => {
-                                                                return checked
-                                                                    ? field.onChange([...field.value, item.id])
-                                                                    : field.onChange(
-                                                                          field.value?.filter(
-                                                                              (value) => value !== item.id
-                                                                          )
-                                                                      );
-                                                            }}
-                                                        />
-                                                    </FormControl>
-                                                    <FormLabel className="font-normal">{item.name}</FormLabel>
-                                                </FormItem>
-                                            );
-                                        }}
-                                    />
-                                ))}
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    /> */}
+                    {disciplineSelected && (
+                        <FormField
+                            control={form.control}
+                            name="result"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Result</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Type Result..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    )}
+
                     <Button type="submit">{result ? "Update" : "Create"}</Button>
                 </form>
             </Form>
