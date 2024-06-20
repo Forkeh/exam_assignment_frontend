@@ -4,6 +4,7 @@ import PageLayout from "./pages/PageLayout";
 import ErrorPage from "./pages/ErrorPage";
 import ParticipantsPage from "./pages/ParticipantsPage";
 import ResultsPage from "./pages/ResultsPage";
+import ParticipantsFormPage from "./pages/ParticipantsFormPage";
 
 function App() {
     return <RouterProvider router={router} />;
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: "/path2",
                 element: <div>Path 2</div>,
+            },
+            {
+                path: "/participantForm",
+                element: <ParticipantsFormPage />,
             },
         ],
     },

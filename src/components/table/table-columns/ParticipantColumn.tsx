@@ -1,6 +1,6 @@
 import { IParticipant } from "@/models/IParticipant";
 import { ColumnDef } from "@tanstack/react-table";
-import { FaRegEdit, FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import {
     Dialog,

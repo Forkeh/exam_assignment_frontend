@@ -161,7 +161,7 @@ export default function ParticipantsPage() {
                                     </Select>
                                 )}
                             </div>
-                            <Link to={"form"}>
+                            <Link to={"participantForm"}>
                                 <Button className="hover:bg-slate-500">Add Participant</Button>
                             </Link>
                         </div>
