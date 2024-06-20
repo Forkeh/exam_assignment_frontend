@@ -21,9 +21,12 @@ function resultConversion(result: IResult) {
     function convertTimeResult() {
         const time = resultAsNumber;
         const minutes = Math.floor(time / 60);
-        const seconds = time - minutes * 60;
+        const fullSeconds = Math.floor(time % 60);
+        const milliseconds = Math.floor((time % 1) * 100);
 
-        return `${minutes}:${seconds}s`;
+        return `${minutes.toString().padStart(2, "0")}:${fullSeconds.toString().padStart(2, "0")}.${milliseconds
+            .toString()
+            .padStart(2, "0")}s`;
     }
 
     function convertDistanceResult() {
