@@ -124,7 +124,7 @@ export default function ParticipantsPage() {
 
                                 {filterBy === "gender" && (
                                     <Select
-                                        defaultValue="MALE"
+                                        defaultValue="none"
                                         onValueChange={(value) => {
                                             setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
                                             setFilterValue(value);
@@ -134,6 +134,7 @@ export default function ParticipantsPage() {
                                             <SelectValue placeholder="Filter by" />
                                         </SelectTrigger>
                                         <SelectContent>
+                                            <SelectItem value="none">None</SelectItem>
                                             <SelectItem value="MALE">Male</SelectItem>
                                             <SelectItem value="FEMALE">Female</SelectItem>
                                         </SelectContent>
@@ -151,12 +152,38 @@ export default function ParticipantsPage() {
                                             <SelectValue placeholder="Filter by" />
                                         </SelectTrigger>
                                         <SelectContent>
+                                            <SelectItem value="none">None</SelectItem>
                                             <SelectItem value="Tigers Club">Tigers Club</SelectItem>
                                             <SelectItem value="Bears Club">Bears Club</SelectItem>
                                             <SelectItem value="Lions Club">Lions Club</SelectItem>
                                             <SelectItem value="Wolves Club">Wolves Club</SelectItem>
                                             <SelectItem value="Hawks Club">Hawks Club</SelectItem>
                                             <SelectItem value="Eagles Club">Eagles Club</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                                {filterBy === "discipline" && (
+                                    <Select
+                                        defaultValue="none"
+                                        onValueChange={(value) => {
+                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
+                                            setFilterValue(value);
+                                        }}
+                                    >
+                                        <SelectTrigger className="w-[160px] bg-gray-100">
+                                            <SelectValue placeholder="Filter by" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">None</SelectItem>
+                                            <SelectItem value="1">100m Sprint</SelectItem>
+                                            <SelectItem value="2">200m Sprint</SelectItem>
+                                            <SelectItem value="3">400m Sprint</SelectItem>
+                                            <SelectItem value="4">Long Jump</SelectItem>
+                                            <SelectItem value="5">Triple Jump</SelectItem>
+                                            <SelectItem value="6">Shot Put</SelectItem>
+                                            <SelectItem value="7">Decathlon</SelectItem>
+                                            <SelectItem value="8">Heptathlon</SelectItem>
+                                            <SelectItem value="9">Pentathlon</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 )}
