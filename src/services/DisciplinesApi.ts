@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios";
 import { API_URL } from "@/config/settings";
-import { IDiscipline } from "@/models/IDiscipline";
 import { IResult } from "@/models/IResult";
 import { IPagination } from "@/models/IPagination";
 

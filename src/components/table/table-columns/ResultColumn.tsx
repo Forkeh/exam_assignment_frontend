@@ -1,4 +1,3 @@
-import { IParticipant } from "@/models/IParticipant";
 import { ColumnDef } from "@tanstack/react-table";
 import { FaInfoCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -12,8 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { deleteParticipant } from "@/services/ParticipantApi";
 import { IResult } from "@/models/IResult";
+import { resultConversion } from "@/utils/resultConversion";
 
 export const ResultColumns: ColumnDef<IResult>[] = [
     {
@@ -41,6 +40,11 @@ export const ResultColumns: ColumnDef<IResult>[] = [
     {
         accessorKey: "result",
         header: "Result",
+        cell: ({ row }) => {
+            const result = row.original as IResult;
+
+            return <div>{resultConversion(result)}</div>;
+        },
     },
     {
         accessorKey: "edit",
