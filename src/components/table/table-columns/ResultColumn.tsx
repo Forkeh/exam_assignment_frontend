@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { FaInfoCircle, FaEdit } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import { toast } from "@/components/ui/use-toast";

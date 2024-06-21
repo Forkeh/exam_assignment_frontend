@@ -25,7 +25,24 @@ export default function ParticipantsPage() {
     const [filterValue, setFilterValue] = useState("");
     const [search, setSearch] = useState("");
 
-    console.log(participants);
+    // TODO: Can this be fixed?
+    // useEffect(() => {
+    //     let filterValue = "";
+    //     switch (filterBy) {
+    //         case "gender":
+    //             filterValue = "MALE";
+    //             break;
+    //         case "club":
+    //             filterValue = "Tigers Club";
+    //             break;
+    //         case "discipline":
+    //             filterValue = "1";
+    //             break;
+    //         default:
+    //             filterValue = "";
+    //     }
+    //     setFilterValue(filterValue);
+    // }, [filterBy]);
 
     useEffect(() => {
         const queryParams = new URLSearchParams({
@@ -56,7 +73,6 @@ export default function ParticipantsPage() {
             });
     }, [pagination, sort, search, filterBy, filterValue]);
 
-    
     return (
         <>
             <div className="flex flex-col gap-4">
@@ -64,7 +80,7 @@ export default function ParticipantsPage() {
                 {participants && (
                     <>
                         <div className="flex justify-between">
-                            <div className="flex gap-4 flex-wrap">
+                            <div className="flex gap-10 flex-wrap">
                                 <Input
                                     className="w-[200px] bg-gray-100"
                                     placeholder="Search Participants..."
@@ -74,6 +90,7 @@ export default function ParticipantsPage() {
                                     }}
                                 />
                                 <div className="flex gap-1">
+                                    {/* <Label htmlFor="email">Your email address</Label> */}
                                     <Select
                                         onValueChange={(value) => {
                                             setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
@@ -108,87 +125,88 @@ export default function ParticipantsPage() {
                                     </Select>
                                 </div>
 
-                                <Select
-                                    onValueChange={(value) => {
-                                        setFilter(value);
-                                    }}
-                                >
-                                    <SelectTrigger className="w-[160px] bg-gray-100">
-                                        <SelectValue placeholder="Filter by" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">Ingen</SelectItem>
-                                        <SelectItem value="gender">Gender</SelectItem>
-                                        <SelectItem value="club">Club</SelectItem>
-                                        <SelectItem value="discipline">Discipline</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <div className="flex gap-2">
+                                    <Select
+                                        onValueChange={(value) => {
+                                            setFilter(value);
+                                        }}
+                                    >
+                                        <SelectTrigger className="w-[160px] bg-gray-100">
+                                            <SelectValue placeholder="Filter by" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">No Filter</SelectItem>
+                                            <SelectItem value="gender">Gender</SelectItem>
+                                            <SelectItem value="club">Club</SelectItem>
+                                            <SelectItem value="discipline">Discipline</SelectItem>
+                                        </SelectContent>
+                                    </Select>
 
-                                {filterBy === "gender" && (
-                                    <Select
-                                        defaultValue="none"
-                                        onValueChange={(value) => {
-                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-                                            setFilterValue(value);
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-[160px] bg-gray-100">
-                                            <SelectValue placeholder="Filter by" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">None</SelectItem>
-                                            <SelectItem value="MALE">Male</SelectItem>
-                                            <SelectItem value="FEMALE">Female</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                                {filterBy === "club" && (
-                                    <Select
-                                        defaultValue="Tigers Club"
-                                        onValueChange={(value) => {
-                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-                                            setFilterValue(value);
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-[160px] bg-gray-100">
-                                            <SelectValue placeholder="Filter by" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">None</SelectItem>
-                                            <SelectItem value="Tigers Club">Tigers Club</SelectItem>
-                                            <SelectItem value="Bears Club">Bears Club</SelectItem>
-                                            <SelectItem value="Lions Club">Lions Club</SelectItem>
-                                            <SelectItem value="Wolves Club">Wolves Club</SelectItem>
-                                            <SelectItem value="Hawks Club">Hawks Club</SelectItem>
-                                            <SelectItem value="Eagles Club">Eagles Club</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                                {filterBy === "discipline" && (
-                                    <Select
-                                        defaultValue="none"
-                                        onValueChange={(value) => {
-                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-                                            setFilterValue(value);
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-[160px] bg-gray-100">
-                                            <SelectValue placeholder="Filter by" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">None</SelectItem>
-                                            <SelectItem value="1">100m Sprint</SelectItem>
-                                            <SelectItem value="2">200m Sprint</SelectItem>
-                                            <SelectItem value="3">400m Sprint</SelectItem>
-                                            <SelectItem value="4">Long Jump</SelectItem>
-                                            <SelectItem value="5">Triple Jump</SelectItem>
-                                            <SelectItem value="6">Shot Put</SelectItem>
-                                            <SelectItem value="7">Decathlon</SelectItem>
-                                            <SelectItem value="8">Heptathlon</SelectItem>
-                                            <SelectItem value="9">Pentathlon</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
+                                    {filterBy === "gender" && (
+                                        <Select
+                                            defaultValue={"MALE"}
+                                            onValueChange={(value) => {
+                                                setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
+                                                setFilterValue(value);
+                                            }}
+                                        >
+                                            <SelectTrigger className="w-[160px] bg-gray-100">
+                                                <SelectValue placeholder="Filter by" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="MALE">Male</SelectItem>
+                                                <SelectItem value="FEMALE">Female</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+
+                                    {filterBy === "club" && (
+                                        <Select
+                                            defaultValue="Tigers Club"
+                                            onValueChange={(value) => {
+                                                setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
+                                                setFilterValue(value);
+                                            }}
+                                        >
+                                            <SelectTrigger className="w-[160px] bg-gray-100">
+                                                <SelectValue placeholder="Filter by" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Tigers Club">Tigers Club</SelectItem>
+                                                <SelectItem value="Bears Club">Bears Club</SelectItem>
+                                                <SelectItem value="Lions Club">Lions Club</SelectItem>
+                                                <SelectItem value="Wolves Club">Wolves Club</SelectItem>
+                                                <SelectItem value="Hawks Club">Hawks Club</SelectItem>
+                                                <SelectItem value="Eagles Club">Eagles Club</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+
+                                    {filterBy === "discipline" && (
+                                        <Select
+                                            defaultValue="1"
+                                            onValueChange={(value) => {
+                                                setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
+                                                setFilterValue(value);
+                                            }}
+                                        >
+                                            <SelectTrigger className="w-[160px] bg-gray-100">
+                                                <SelectValue placeholder="Filter by" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="1">100m Sprint</SelectItem>
+                                                <SelectItem value="2">200m Sprint</SelectItem>
+                                                <SelectItem value="3">400m Sprint</SelectItem>
+                                                <SelectItem value="4">Long Jump</SelectItem>
+                                                <SelectItem value="5">Triple Jump</SelectItem>
+                                                <SelectItem value="6">Shot Put</SelectItem>
+                                                <SelectItem value="7">Decathlon</SelectItem>
+                                                <SelectItem value="8">Heptathlon</SelectItem>
+                                                <SelectItem value="9">Pentathlon</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                </div>
                             </div>
                             <Link to={"participantForm"}>
                                 <Button className="hover:bg-slate-500">Add Participant</Button>

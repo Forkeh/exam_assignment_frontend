@@ -10,6 +10,7 @@ import { IResult } from "@/models/IResult";
 import { getAllResults } from "@/services/ResultApi";
 import { ResultColumns } from "@/components/table/table-columns/ResultColumn";
 
+// TODO: Implement Sort, Filter, Search?
 export default function ResultsPage() {
     const [results, setResults] = useState<IPagination<IResult> | null>(null);
     const [pagination, setPagination] = useState<PaginationSize>({

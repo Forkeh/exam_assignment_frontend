@@ -1,6 +1,6 @@
 import { IParticipant } from "@/models/IParticipant";
 import { ColumnDef } from "@tanstack/react-table";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle, FaMale, FaFemale } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import {
     Dialog,
@@ -26,6 +26,13 @@ export const ParticipantColumns: ColumnDef<IParticipant>[] = [
     {
         accessorKey: "gender",
         header: "Gender",
+        cell: ({ row }) => {
+            const participant = row.original as IParticipant;
+
+            return (
+                <div>{participant.gender === "MALE" ? <FaMale size={25} /> : <FaFemale size={25} />}</div>
+            );
+        },
     },
     {
         accessorKey: "age",
@@ -34,6 +41,15 @@ export const ParticipantColumns: ColumnDef<IParticipant>[] = [
     {
         accessorKey: "club",
         header: "Club",
+    },
+    {
+        accessorKey: "discipline",
+        header: "Disciplines",
+        cell: ({ row }) => {
+            const participant = row.original as IParticipant;
+
+            return <div>{participant.disciplines.join(" - ")}</div>;
+        },
     },
     {
         accessorKey: "edit",

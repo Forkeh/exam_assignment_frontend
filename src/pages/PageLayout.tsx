@@ -7,7 +7,11 @@ export default function PageLayout() {
         <main>
             <h1 className="text-4xl font-bold text-center my-5">Athletics Meet Manager</h1>
             <Navbar />
-            <Outlet />
+            <main className="flex justify-center ">
+                <div className="w-3/4">
+                    <Outlet />
+                </div>
+            </main>
             <Toaster />
         </main>
     );
