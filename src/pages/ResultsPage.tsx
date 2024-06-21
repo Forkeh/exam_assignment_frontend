@@ -18,12 +18,10 @@ export default function ResultsPage() {
         pageSize: 10, //default page size
     });
     const [sort, setSort] = useState({
-        sortBy: "id",
+        sortBy: "result",
         sortDir: "ASC",
     });
-    const [filterBy, setFilter] = useState("");
-    const [filterValue, setFilterValue] = useState("");
-    const [search, setSearch] = useState(""); //TODO: Remove search?
+    const [filterBy, setFilter] = useState("1");
 
     console.log(results);
 
@@ -35,11 +33,9 @@ export default function ResultsPage() {
             ...sort,
         });
 
-        if (filterBy != "none" && filterValue != "") {
+        if (filterBy != "none") {
             queryParams.append("filterBy", filterBy);
-            queryParams.append("filterValue", filterValue);
         }
-        if (search) queryParams.append("searchBy", search);
 
         console.log(queryParams);
 
@@ -54,7 +50,7 @@ export default function ResultsPage() {
                     variant: "destructive",
                 });
             });
-    }, [pagination, sort, search, filterBy, filterValue]);
+    }, [pagination, sort, filterBy]);
 
     return (
         <>
@@ -63,33 +59,46 @@ export default function ResultsPage() {
                 {results && (
                     <>
                         <div className="flex justify-between">
-                            <div className="flex gap-4 flex-wrap">
-                                {/* <Input
-                                    className="w-[200px] bg-gray-100"
-                                    placeholder="Search Participants..."
-                                    onChange={(e) => {
+                            <div className="flex gap-10 flex-wrap">
+                                <Select
+                                    onValueChange={(value) => {
                                         setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-                                        setSearch(e.target.value);
+                                        setSort((prevState) => ({ ...prevState, sortBy: value }));
                                     }}
-                                /> */}
-                                <div className="flex gap-1">
+                                >
+                                    <SelectTrigger className="w-[140px] bg-gray-100">
+                                        <SelectValue placeholder="Sort By" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="id">ID</SelectItem>
+                                        <SelectItem value="name">Name</SelectItem>
+                                        <SelectItem value="gender">Gender</SelectItem>
+                                        <SelectItem value="club">Club</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                <div className="flex gap-2">
                                     <Select
                                         onValueChange={(value) => {
-                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-                                            setSort((prevState) => ({ ...prevState, sortBy: value }));
+                                            setFilter(value);
                                         }}
+                                        defaultValue="1"
                                     >
-                                        <SelectTrigger className="w-[140px] bg-gray-100">
-                                            <SelectValue placeholder="Sort By" />
+                                        <SelectTrigger className="w-[160px] bg-gray-100">
+                                            <SelectValue placeholder="Filter by" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="id">ID</SelectItem>
-                                            <SelectItem value="name">Name</SelectItem>
-                                            <SelectItem value="gender">Gender</SelectItem>
-                                            <SelectItem value="club">Club</SelectItem>
+                                            <SelectItem value="1">100m Sprint</SelectItem>
+                                            <SelectItem value="2">200m Sprint</SelectItem>
+                                            <SelectItem value="3">400m Sprint</SelectItem>
+                                            <SelectItem value="4">Long Jump</SelectItem>
+                                            <SelectItem value="5">Triple Jump</SelectItem>
+                                            <SelectItem value="6">Shot Put</SelectItem>
+                                            <SelectItem value="7">Decathlon</SelectItem>
+                                            <SelectItem value="8">Heptathlon</SelectItem>
+                                            <SelectItem value="9">Pentathlon</SelectItem>
                                         </SelectContent>
                                     </Select>
-
                                     <Select
                                         defaultValue="ASC"
                                         onValueChange={(value) => {
@@ -106,95 +115,13 @@ export default function ResultsPage() {
                                         </SelectContent>
                                     </Select>
                                 </div>
-
-                                <Select
-                                    onValueChange={(value) => {
-                                        setFilter(value);
-                                    }}
-                                >
-                                    <SelectTrigger className="w-[160px] bg-gray-100">
-                                        <SelectValue placeholder="Filter by" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">Ingen</SelectItem>
-                                        <SelectItem value="gender">Gender</SelectItem>
-                                        <SelectItem value="club">Club</SelectItem>
-                                        <SelectItem value="discipline">Discipline</SelectItem>
-                                    </SelectContent>
-                                </Select>
-
-                                {filterBy === "gender" && (
-                                    <Select
-                                        defaultValue="none"
-                                        onValueChange={(value) => {
-                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-                                            setFilterValue(value);
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-[160px] bg-gray-100">
-                                            <SelectValue placeholder="Filter by" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">None</SelectItem>
-                                            <SelectItem value="MALE">Male</SelectItem>
-                                            <SelectItem value="FEMALE">Female</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                                {filterBy === "club" && (
-                                    <Select
-                                        defaultValue="Tigers Club"
-                                        onValueChange={(value) => {
-                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-                                            setFilterValue(value);
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-[160px] bg-gray-100">
-                                            <SelectValue placeholder="Filter by" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">None</SelectItem>
-                                            <SelectItem value="Tigers Club">Tigers Club</SelectItem>
-                                            <SelectItem value="Bears Club">Bears Club</SelectItem>
-                                            <SelectItem value="Lions Club">Lions Club</SelectItem>
-                                            <SelectItem value="Wolves Club">Wolves Club</SelectItem>
-                                            <SelectItem value="Hawks Club">Hawks Club</SelectItem>
-                                            <SelectItem value="Eagles Club">Eagles Club</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
-                                {filterBy === "discipline" && (
-                                    <Select
-                                        defaultValue="none"
-                                        onValueChange={(value) => {
-                                            setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-                                            setFilterValue(value);
-                                        }}
-                                    >
-                                        <SelectTrigger className="w-[160px] bg-gray-100">
-                                            <SelectValue placeholder="Filter by" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="none">None</SelectItem>
-                                            <SelectItem value="1">100m Sprint</SelectItem>
-                                            <SelectItem value="2">200m Sprint</SelectItem>
-                                            <SelectItem value="3">400m Sprint</SelectItem>
-                                            <SelectItem value="4">Long Jump</SelectItem>
-                                            <SelectItem value="5">Triple Jump</SelectItem>
-                                            <SelectItem value="6">Shot Put</SelectItem>
-                                            <SelectItem value="7">Decathlon</SelectItem>
-                                            <SelectItem value="8">Heptathlon</SelectItem>
-                                            <SelectItem value="9">Pentathlon</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                )}
                             </div>
                             <Link to={"/resultForm"}>
                                 <Button className="hover:bg-slate-500">Add Result</Button>
                             </Link>
                         </div>
                         <motion.div
-                            key={pagination.pageIndex + sort.sortBy + sort.sortDir + filterBy + search}
+                            key={pagination.pageIndex + sort.sortBy + sort.sortDir + filterBy}
                             initial={{
                                 opacity: 0,
                             }}

@@ -37,6 +37,7 @@ export const ResultColumns: ColumnDef<IResult>[] = [
             const result = row.original as IResult;
 
             return <div>{resultConversion(result)}</div>;
+            // return <div>{result.result}</div>;
         },
     },
     {
