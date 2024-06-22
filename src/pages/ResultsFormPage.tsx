@@ -20,10 +20,10 @@ import { IDiscipline } from "@/models/IDiscipline";
 import resultTypeDictionary from "@/utils/resultTypeDictionary";
 
 const FormSchema = z.object({
-	discipline: z.string().min(1, {
+	discipline: z.number().min(1, {
 		message: "Name must be at least 2 characters.",
 	}),
-	participant: z.string().min(1, {
+	participant: z.number().min(1, {
 		message: "Participant must be selected.",
 	}),
 	result: z.string().min(1, {
@@ -64,8 +64,8 @@ export default function ResultsFormPage() {
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			discipline: result ? String(result?.discipline.id) : "",
-			participant: result ? String(result?.participant.id) : "",
+			discipline: result ? result?.discipline.id : 1,
+			participant: result ? result?.participant.id : 1,
 			result: result?.result || "",
 		},
 	});
@@ -146,7 +146,7 @@ export default function ResultsFormPage() {
 								<FormItem>
 									<FormLabel>Participant</FormLabel>
 									<FormControl>
-										<Select onValueChange={field.onChange} defaultValue={field.value} disabled={result ? true : false}>
+										<Select onValueChange={field.onChange} defaultValue={String(field.value)} disabled={result ? true : false}>
 											<SelectTrigger>
 												<SelectValue placeholder="Choose participant" />
 											</SelectTrigger>
@@ -173,7 +173,7 @@ export default function ResultsFormPage() {
 									<FormItem>
 										<FormLabel>Discipline</FormLabel>
 										<FormControl>
-											<Select onValueChange={field.onChange} defaultValue={field.value} disabled={result ? true : false}>
+											<Select onValueChange={field.onChange} defaultValue={String(field.value)} disabled={result ? true : false}>
 												<SelectTrigger>
 													<SelectValue placeholder="Choose discipline" />
 												</SelectTrigger>

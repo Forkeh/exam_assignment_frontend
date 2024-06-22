@@ -1,6 +1,6 @@
 export interface IResultRequest {
     id?: number;
-    disciplineId: string;
-    participantId: string;
+    disciplineId: number;
+    participantId: number;
     result: string;
 }

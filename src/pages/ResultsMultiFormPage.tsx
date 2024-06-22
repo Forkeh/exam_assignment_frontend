@@ -3,7 +3,7 @@ import { IDiscipline } from "@/models/IDiscipline";
 import { getAllDisciplines } from "@/services/DisciplinesApi";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Form, FormControl, FormField, FormItem, FormLabel} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { getAllParticipantsNoPagination } from "@/services/ParticipantApi";
 import { IParticipantFull } from "@/models/IParticipantFull";
 import { z } from "zod";
@@ -15,8 +15,8 @@ import { createMultipleResults } from "@/services/ResultApi";
 import { useNavigate } from "react-router-dom";
 
 const IResultRequestSchema = z.object({
-	disciplineId: z.string(),
-	participantId: z.string(),
+	disciplineId: z.number(),
+	participantId: z.number(),
 	result: z.string(),
 });
 
@@ -74,17 +74,25 @@ export default function ResultsMultiFormPage() {
 		name: "results",
 	});
 
+	const filteredParticipants = participants?.filter((participant) => participant.disciplines.some((discipline) => discipline.id === Number(selectedDiscipline)));
+
 	useEffect(() => {
 		if (participants) {
+			console.log(participants);
+
+			const filteredParticipants = participants?.filter((participant) => participant.disciplines.some((discipline) => discipline.id === Number(selectedDiscipline)));
+
 			// Initialize form fields based on participants when participants data is available
-			const initialResults = participants.map((participant) => ({
-				disciplineId: selectedDiscipline || "",
-				participantId: String(participant.id),
+			const initialResults = filteredParticipants?.map((participant) => ({
+				disciplineId: Number(selectedDiscipline) || 1,
+				participantId: participant.id!,
 				result: "",
 			}));
+			console.log(initialResults);
+
 			replace(initialResults);
 		}
-	}, [participants, selectedDiscipline, replace]);
+	}, [selectedDiscipline, replace, participants]);
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
 		console.log(data.results);
@@ -110,8 +118,6 @@ export default function ResultsMultiFormPage() {
 				});
 			});
 	}
-
-	const filteredParticipants = participants?.filter((participant) => participant.disciplines.some((discipline) => discipline.id === Number(selectedDiscipline)));
 
 	return (
 		<>
