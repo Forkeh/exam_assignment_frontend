@@ -116,9 +116,14 @@ export default function ResultsPage() {
 									</Select>
 								</div>
 							</div>
-							<Link to={"/resultForm"}>
-								<Button className="hover:bg-slate-500">Add Result</Button>
-							</Link>
+							<div className="flex gap-2">
+                <Link to={"/resultForm"}>
+                  <Button className="hover:bg-slate-500">Add Result</Button>
+                </Link>
+                <Link to={"/resultForm/multi"}>
+                  <Button className="hover:bg-slate-500">Add Multi Results</Button>
+                </Link>
+              </div>
 						</div>
 						<motion.div
 							key={pagination.pageIndex + sort.sortBy + sort.sortDir + filterBy}

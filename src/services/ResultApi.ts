@@ -12,6 +12,10 @@ async function createResult(data: IResultRequest): Promise<AxiosResponse<IResult
     return await axios.post(`${API_URL}/results`, data);
 }
 
+async function createMultipleResults(data: IResultRequest[]): Promise<AxiosResponse<IResult[], unknown>> {
+    return await axios.post(`${API_URL}/results/multiple`, data);
+}
+
 async function updateResult(data: IResultRequest): Promise<AxiosResponse<IResult, unknown>> {
     return await axios.put(`${API_URL}/results/${data.id}`, data);
 }
@@ -20,4 +24,4 @@ async function deleteResult(id: number): Promise<AxiosResponse<IResult, unknown>
     return await axios.delete(`${API_URL}/results/${id}`);
 }
 
-export { getAllResults, createResult, updateResult, deleteResult };
+export { getAllResults, createResult, updateResult, deleteResult, createMultipleResults };
