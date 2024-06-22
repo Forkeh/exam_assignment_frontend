@@ -38,25 +38,15 @@ const FormSchema = z.object({
 export default function ParticipantsFormPage() {
 	const [disciplines, setDisciplines] = useState<IDiscipline[]>([]);
 	const [fullParticipant, setFullParticipant] = useState<IParticipantFull | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
 	const participant = useLocation().state as IParticipant | null;
 	const navigate = useNavigate();
 
-	console.log(fullParticipant);
-
 	useEffect(() => {
-		getAllDisciplines()
-			.then((res) => setDisciplines(res.data))
-			.catch(() => {
-				toast({
-					title: "Oh no! Something went wrong!",
-					description: `We could not fetch the disciplines from the server. Please try again later.`,
-					variant: "destructive",
-				});
-			});
-	}, []);
-
-	useEffect(() => {
-		if (!participant) return;
+		if (!participant) {
+			setIsLoading(false);
+			return;
+		}
 
 		getParticipantById(participant.id!)
 			.then((res) => setFullParticipant(res.data))
@@ -67,12 +57,22 @@ export default function ParticipantsFormPage() {
 					variant: "destructive",
 				});
 			});
+		setIsLoading(false);
 	}, [participant]);
 
-    const fullParticipantDisciplines = fullParticipant?.disciplines.map(d => d.id);
-    console.log(fullParticipantDisciplines);
-    
-
+	useEffect(() => {
+		if (!isLoading) {
+			getAllDisciplines()
+				.then((res) => setDisciplines(res.data))
+				.catch(() => {
+					toast({
+						title: "Oh no! Something went wrong!",
+						description: `We could not fetch the disciplines from the server. Please try again later.`,
+						variant: "destructive",
+					});
+				});
+		}
+	}, [isLoading]);
 
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -81,12 +81,17 @@ export default function ParticipantsFormPage() {
 			gender: participant?.gender || "MALE",
 			age: participant?.age || 0,
 			club: participant?.club || "",
-			disciplines: fullParticipant?.disciplines.map(d => d.id) || [],
+			disciplines: fullParticipant?.disciplines.map((d) => d.id) || [],
 		},
 	});
 
-    console.log(fullParticipantDisciplines);
-    
+	useEffect(() => {
+		if (fullParticipant) {
+			form.reset({
+				disciplines: fullParticipant?.disciplines.map((d) => d.id),
+			});
+		}
+	}, [fullParticipant, form]);
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
 		console.log("onSubmit");
@@ -101,7 +106,6 @@ export default function ParticipantsFormPage() {
 
 		if (participant) {
 			newParticipant.id = Number(participant!.id);
-			console.log(newParticipant);
 
 			// PUT
 
@@ -220,33 +224,35 @@ export default function ParticipantsFormPage() {
 							render={() => (
 								<FormItem>
 									<div className="mb-4">
-										<FormLabel className="text-base">Disciplines</FormLabel>
+										<FormLabel className="text-base font-bold">Disciplines</FormLabel>
 										<FormDescription>Select disciplines.</FormDescription>
 									</div>
-									{disciplines.map((item) => (
-										<FormField
-											key={item.id}
-											control={form.control}
-											name="disciplines"
-											render={({ field }) => {
-												return (
-													<FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
-														<FormControl>
-															<Checkbox
-																checked={field.value?.includes(item.id)}
-																onCheckedChange={(checked) => {
-																	return checked
-																		? field.onChange([...field.value, item.id])
-																		: field.onChange(field.value?.filter((value) => value !== item.id));
-																}}
-															/>
-														</FormControl>
-														<FormLabel className="font-normal">{item.name}</FormLabel>
-													</FormItem>
-												);
-											}}
-										/>
-									))}
+									<div className="grid grid-cols-2 flex-wrap gap-3 rounded-md p-5 shadow-md outline outline-1 outline-gray-200">
+										{disciplines.map((item) => (
+											<FormField
+												key={item.id}
+												control={form.control}
+												name="disciplines"
+												render={({ field }) => {
+													return (
+														<FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
+															<FormControl>
+																<Checkbox
+																	checked={field.value?.includes(item.id)}
+																	onCheckedChange={(checked) => {
+																		return checked
+																			? field.onChange([...field.value, item.id])
+																			: field.onChange(field.value?.filter((value) => value !== item.id));
+																	}}
+																/>
+															</FormControl>
+															<FormLabel className="font-normal">{item.name}</FormLabel>
+														</FormItem>
+													);
+												}}
+											/>
+										))}
+									</div>
 									<FormMessage />
 								</FormItem>
 							)}
