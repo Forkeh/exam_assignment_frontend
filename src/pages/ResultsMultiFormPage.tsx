@@ -74,8 +74,6 @@ export default function ResultsMultiFormPage() {
 		name: "results",
 	});
 
-	const filteredParticipants = participants?.filter((participant) => participant.disciplines.some((discipline) => discipline.id === Number(selectedDiscipline)));
-
 	useEffect(() => {
 		if (participants) {
 			console.log(participants);
@@ -119,44 +117,48 @@ export default function ResultsMultiFormPage() {
 			});
 	}
 
+	const filteredParticipants = participants?.filter((participant) => participant.disciplines.some((discipline) => discipline.id === Number(selectedDiscipline)));
+
 	return (
 		<>
 			<h2 className="mb-5 text-pretty text-center text-3xl font-bold sm:text-5xl">Create Multi Results</h2>
-			{disciplines && (
-				<Select onValueChange={handleOnDisciplineChange}>
-					<SelectTrigger className="w-[180px]">
-						<SelectValue placeholder="Select Discipline" />
-					</SelectTrigger>
-					<SelectContent>
-						{disciplines?.map((discipline) => (
-							<SelectItem key={discipline.id} value={String(discipline.id)}>
-								{discipline.name}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			)}
+			<section className="flex flex-col items-center gap-5">
+				{disciplines && (
+					<Select onValueChange={handleOnDisciplineChange}>
+						<SelectTrigger className="w-[180px]">
+							<SelectValue placeholder="Select Discipline" />
+						</SelectTrigger>
+						<SelectContent>
+							{disciplines?.map((discipline) => (
+								<SelectItem key={discipline.id} value={String(discipline.id)}>
+									{discipline.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				)}
 
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-					{filteredParticipants &&
-						filteredParticipants.map((participant, index) => (
-							<FormItem key={participant.id}>
-								<FormLabel>{participant.name}</FormLabel>
-								<FormField
-									control={form.control}
-									name={`results.${index}.result`}
-									render={({ field }) => (
-										<FormControl>
-											<Input placeholder="Result" type="number" {...field} />
-										</FormControl>
-									)}
-								/>
-							</FormItem>
-						))}
-					<Button type="submit">Submit</Button>
-				</form>
-			</Form>
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)} className="flex w-80 flex-col justify-center space-y-6">
+						{filteredParticipants &&
+							filteredParticipants.map((participant, index) => (
+								<FormItem key={participant.id}>
+									<FormLabel>{participant.name}</FormLabel>
+									<FormField
+										control={form.control}
+										name={`results.${index}.result`}
+										render={({ field }) => (
+											<FormControl>
+												<Input placeholder="Result" type="number" {...field} />
+											</FormControl>
+										)}
+									/>
+								</FormItem>
+							))}
+						<Button type="submit">Submit</Button>
+					</form>
+				</Form>
+			</section>
 		</>
 	);
 }
