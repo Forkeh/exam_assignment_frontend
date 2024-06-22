@@ -64,8 +64,8 @@ export default function ResultsFormPage() {
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			discipline: result ? result?.discipline.id : 1,
-			participant: result ? result?.participant.id : 1,
+			discipline: result ? result?.discipline.id : undefined,
+			participant: result ? result?.participant.id : undefined,
 			result: result?.result || "",
 		},
 	});
@@ -79,6 +79,8 @@ export default function ResultsFormPage() {
 	const selectedParticipantDisciplines = participants?.find((participant) => participant.id === Number(participantSelected))?.disciplines;
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
+		console.log(data);
+
 		const newResult = {
 			disciplineId: data.discipline,
 			participantId: data.participant,
@@ -146,7 +148,7 @@ export default function ResultsFormPage() {
 								<FormItem>
 									<FormLabel>Participant</FormLabel>
 									<FormControl>
-										<Select onValueChange={field.onChange} defaultValue={String(field.value)} disabled={result ? true : false}>
+										<Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={String(field.value)} disabled={result ? true : false}>
 											<SelectTrigger>
 												<SelectValue placeholder="Choose participant" />
 											</SelectTrigger>
@@ -173,7 +175,7 @@ export default function ResultsFormPage() {
 									<FormItem>
 										<FormLabel>Discipline</FormLabel>
 										<FormControl>
-											<Select onValueChange={field.onChange} defaultValue={String(field.value)} disabled={result ? true : false}>
+											<Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={String(field.value)} disabled={result ? true : false}>
 												<SelectTrigger>
 													<SelectValue placeholder="Choose discipline" />
 												</SelectTrigger>
