@@ -10,7 +10,6 @@ import { IResult } from "@/models/IResult";
 import { getAllResults } from "@/services/ResultApi";
 import { ResultColumns } from "@/components/table/table-columns/ResultColumn";
 
-// TODO: Implement Sort, Filter, Search?
 export default function ResultsPage() {
 	const [results, setResults] = useState<IPagination<IResult> | null>(null);
 	const [pagination, setPagination] = useState<PaginationSize>({
@@ -23,6 +22,7 @@ export default function ResultsPage() {
 	});
 	const [filterBy, setFilter] = useState("1");
 	const [filterByGender, setFilterGender] = useState("none");
+	const [filterByAge, setFilterAge] = useState("none");
 
 	console.log(results);
 
@@ -38,9 +38,13 @@ export default function ResultsPage() {
 			queryParams.append("filterBy", filterBy);
 		}
 
-    if (filterByGender != "none") {
-		queryParams.append("filterByGender", filterByGender);
-	}
+		if (filterByGender != "none") {
+			queryParams.append("filterByGender", filterByGender);
+		}
+
+		if (filterByAge != "none") {
+			queryParams.append("filterByAge", filterByAge);
+		}
 
 		console.log(queryParams);
 
@@ -55,7 +59,7 @@ export default function ResultsPage() {
 					variant: "destructive",
 				});
 			});
-	}, [pagination, sort, filterBy, filterByGender]);
+	}, [pagination, sort, filterBy, filterByGender, filterByAge]);
 
 	return (
 		<>
@@ -63,9 +67,9 @@ export default function ResultsPage() {
 				<h2 className="mb-5 text-pretty text-center text-3xl font-bold sm:text-5xl">Results</h2>
 				{results && (
 					<>
-						<div className="flex justify-between">
+						<div className="flex flex-wrap justify-between">
 							<div className="flex flex-wrap gap-10">
-								<Select
+								{/* <Select
 									onValueChange={(value) => {
 										setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
 										setSort((prevState) => ({ ...prevState, sortBy: value }));
@@ -80,7 +84,7 @@ export default function ResultsPage() {
 										<SelectItem value="gender">Gender</SelectItem>
 										<SelectItem value="club">Club</SelectItem>
 									</SelectContent>
-								</Select>
+								</Select> */}
 
 								<div className="flex gap-2">
 									<Select
@@ -121,20 +125,38 @@ export default function ResultsPage() {
 									</Select>
 								</div>
 							</div>
-							<div>
+							<div className="flex gap-2">
 								<Select
 									onValueChange={(value) => {
 										setFilterGender(value);
 									}}
 									defaultValue=""
 								>
-									<SelectTrigger className="w-[160px] bg-gray-100">
+									<SelectTrigger className="w-[150px] bg-gray-100">
 										<SelectValue placeholder="Filter by Gender" />
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value="none">None</SelectItem>
 										<SelectItem value="MALE">Male</SelectItem>
 										<SelectItem value="FEMALE">Female</SelectItem>
+									</SelectContent>
+								</Select>
+								<Select
+									onValueChange={(value) => {
+										setFilterAge(value);
+									}}
+									defaultValue=""
+								>
+									<SelectTrigger className="w-[180px] bg-gray-100">
+										<SelectValue placeholder="Filter by Age Group" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="none">None</SelectItem>
+										<SelectItem value="CHILD">Child</SelectItem>
+										<SelectItem value="YOUTH">Youth</SelectItem>
+										<SelectItem value="JUNIOR">Junior</SelectItem>
+										<SelectItem value="ADULT">Adult</SelectItem>
+										<SelectItem value="SENIOR">Senior</SelectItem>
 									</SelectContent>
 								</Select>
 							</div>
@@ -147,17 +169,9 @@ export default function ResultsPage() {
 								</Link>
 							</div>
 						</div>
-						<motion.div
-							key={pagination.pageIndex + sort.sortBy + sort.sortDir + filterBy}
-							initial={{
-								opacity: 0,
-							}}
-							animate={{
-								opacity: 1,
-							}}
-						>
+						<div>
 							<DataTable columns={ResultColumns} data={results.content} pagination={pagination} />
-						</motion.div>
+						</div>
 						<div className="flex justify-evenly">
 							<Button
 								className="hover:bg-slate-500"

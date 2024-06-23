@@ -31,6 +31,15 @@ export const ResultColumns: ColumnDef<IResult>[] = [
 		},
 	},
 	{
+		accessorKey: "ageGroup",
+		header: "Age Group",
+		cell: ({ row }) => {
+			const result = row.original as IResult;
+
+			return <div>{result.participant.ageGroup}</div>;
+		},
+	},
+	{
 		accessorKey: "gender",
 		header: "Gender",
 		cell: ({ row }) => {

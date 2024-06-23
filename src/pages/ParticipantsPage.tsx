@@ -212,17 +212,9 @@ export default function ParticipantsPage() {
 								<Button className="hover:bg-slate-500">Add Participant</Button>
 							</Link>
 						</div>
-						<motion.div
-							key={pagination.pageIndex + sort.sortBy + sort.sortDir + filterBy + search}
-							initial={{
-								opacity: 0,
-							}}
-							animate={{
-								opacity: 1,
-							}}
-						>
+						<div>
 							<DataTable columns={ParticipantColumns} data={participants.content} pagination={pagination} />
-						</motion.div>
+						</div>
 						<div className="flex justify-evenly">
 							<Button
 								className="hover:bg-slate-500"

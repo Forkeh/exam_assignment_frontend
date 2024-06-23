@@ -7,4 +7,5 @@ export interface IParticipantFull {
     age: number;
     club: string;
     disciplines: IDiscipline[];
+    ageGroup: string;
 }
