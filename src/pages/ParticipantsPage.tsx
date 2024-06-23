@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { IPagination } from "@/models/IPagination";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
 import { ParticipantColumns } from "@/components/table/table-columns/ParticipantColumn";
 
 export default function ParticipantsPage() {
@@ -21,28 +20,31 @@ export default function ParticipantsPage() {
 		sortBy: "id",
 		sortDir: "ASC",
 	});
-	const [filterBy, setFilter] = useState("");
+	const [filterBy, setFilterBy] = useState("");
 	const [filterValue, setFilterValue] = useState("");
 	const [search, setSearch] = useState("");
 
 	// TODO: Can this be fixed?
-	// useEffect(() => {
-	//     let filterValue = "";
-	//     switch (filterBy) {
-	//         case "gender":
-	//             filterValue = "MALE";
-	//             break;
-	//         case "club":
-	//             filterValue = "Tigers Club";
-	//             break;
-	//         case "discipline":
-	//             filterValue = "1";
-	//             break;
-	//         default:
-	//             filterValue = "";
-	//     }
-	//     setFilterValue(filterValue);
-	// }, [filterBy]);
+	useEffect(() => {
+		let filterValue = "";
+		switch (filterBy) {
+			case "gender":
+				filterValue = "MALE";
+				break;
+			case "club":
+				filterValue = "Tigers Club";
+				break;
+			case "discipline":
+				filterValue = "1";
+				break;
+			default:
+				filterValue = "";
+		}
+		setFilterValue(filterValue);
+	}, [filterBy]);
+
+	console.log(participants);
+	
 
 	useEffect(() => {
 		const queryParams = new URLSearchParams({
@@ -128,7 +130,7 @@ export default function ParticipantsPage() {
 								<div className="flex gap-2">
 									<Select
 										onValueChange={(value) => {
-											setFilter(value);
+											setFilterBy(value);
 										}}
 									>
 										<SelectTrigger className="w-[160px] bg-gray-100">

@@ -5,7 +5,6 @@ import DataTable, { PaginationSize } from "@/components/table/DataTable.tsx";
 import { Button } from "@/components/ui/button";
 import { IPagination } from "@/models/IPagination";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { motion } from "framer-motion";
 import { IResult } from "@/models/IResult";
 import { getAllResults } from "@/services/ResultApi";
 import { ResultColumns } from "@/components/table/table-columns/ResultColumn";
