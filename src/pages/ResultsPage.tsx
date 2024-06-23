@@ -22,7 +22,7 @@ export default function ResultsPage() {
 		sortDir: "ASC",
 	});
 	const [filterBy, setFilter] = useState("1");
-	const [filterByGender, setFilterGender] = useState("");
+	const [filterByGender, setFilterGender] = useState("none");
 
 	console.log(results);
 
@@ -38,7 +38,7 @@ export default function ResultsPage() {
 			queryParams.append("filterBy", filterBy);
 		}
 
-    if (filterByGender) {
+    if (filterByGender != "none") {
 		queryParams.append("filterByGender", filterByGender);
 	}
 
@@ -132,6 +132,7 @@ export default function ResultsPage() {
 										<SelectValue placeholder="Filter by Gender" />
 									</SelectTrigger>
 									<SelectContent>
+										<SelectItem value="none">None</SelectItem>
 										<SelectItem value="MALE">Male</SelectItem>
 										<SelectItem value="FEMALE">Female</SelectItem>
 									</SelectContent>
