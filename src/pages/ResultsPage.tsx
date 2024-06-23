@@ -22,6 +22,7 @@ export default function ResultsPage() {
 		sortDir: "ASC",
 	});
 	const [filterBy, setFilter] = useState("1");
+	const [filterByGender, setFilterGender] = useState("");
 
 	console.log(results);
 
@@ -37,6 +38,10 @@ export default function ResultsPage() {
 			queryParams.append("filterBy", filterBy);
 		}
 
+    if (filterByGender) {
+		queryParams.append("filterByGender", filterByGender);
+	}
+
 		console.log(queryParams);
 
 		getAllResults(queryParams.toString())
@@ -50,7 +55,7 @@ export default function ResultsPage() {
 					variant: "destructive",
 				});
 			});
-	}, [pagination, sort, filterBy]);
+	}, [pagination, sort, filterBy, filterByGender]);
 
 	return (
 		<>
@@ -116,14 +121,30 @@ export default function ResultsPage() {
 									</Select>
 								</div>
 							</div>
+							<div>
+								<Select
+									onValueChange={(value) => {
+										setFilterGender(value);
+									}}
+									defaultValue=""
+								>
+									<SelectTrigger className="w-[160px] bg-gray-100">
+										<SelectValue placeholder="Filter by Gender" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="MALE">Male</SelectItem>
+										<SelectItem value="FEMALE">Female</SelectItem>
+									</SelectContent>
+								</Select>
+							</div>
 							<div className="flex gap-2">
-                <Link to={"/resultForm"}>
-                  <Button className="hover:bg-slate-500">Add Result</Button>
-                </Link>
-                <Link to={"/resultForm/multi"}>
-                  <Button className="hover:bg-slate-500">Add Multi Results</Button>
-                </Link>
-              </div>
+								<Link to={"/resultForm"}>
+									<Button className="hover:bg-slate-500">Add Result</Button>
+								</Link>
+								<Link to={"/resultForm/multi"}>
+									<Button className="hover:bg-slate-500">Add Multi Results</Button>
+								</Link>
+							</div>
 						</div>
 						<motion.div
 							key={pagination.pageIndex + sort.sortBy + sort.sortDir + filterBy}

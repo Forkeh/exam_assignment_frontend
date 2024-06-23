@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaFemale, FaMale } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
 import { toast } from "@/components/ui/use-toast";
@@ -8,90 +8,98 @@ import { resultConversion } from "@/utils/resultConversion";
 import { deleteResult } from "@/services/ResultApi";
 
 export const ResultColumns: ColumnDef<IResult>[] = [
-    {
-        accessorKey: "id",
-        header: "Id",
-    },
-    {
-        accessorKey: "discipline",
-        header: "Discipline",
-        cell: ({ row }) => {
-            const result = row.original as IResult;
+	{
+		accessorKey: "id",
+		header: "Id",
+	},
+	{
+		accessorKey: "discipline",
+		header: "Discipline",
+		cell: ({ row }) => {
+			const result = row.original as IResult;
 
-            return <div>{result.discipline.name}</div>;
-        },
-    },
-    {
-        accessorKey: "participant",
-        header: "Particiant",
-        cell: ({ row }) => {
-            const result = row.original as IResult;
+			return <div>{result.discipline.name}</div>;
+		},
+	},
+	{
+		accessorKey: "participant",
+		header: "Particiant",
+		cell: ({ row }) => {
+			const result = row.original as IResult;
 
-            return <div>{result.participant.name}</div>;
-        },
-    },
-    {
-        accessorKey: "result",
-        header: "Result",
-        cell: ({ row }) => {
-            const result = row.original as IResult;
+			return <div>{result.participant.name}</div>;
+		},
+	},
+	{
+		accessorKey: "gender",
+		header: "Gender",
+		cell: ({ row }) => {
+			const result = row.original as IResult;
 
-            return <div>{resultConversion(result)}</div>;
-            // return <div>{result.result}</div>;
-        },
-    },
-    {
-        accessorKey: "edit",
-        header: "Edit",
-        cell: ({ row }) => {
-            const result = row.original as IResult;
-            return (
-                <div className="flex  hover:text-orange-500 transition-all cursor-pointer">
-                    <Link to={`/resultForm`} state={result}>
-                        <FaEdit size={22} />
-                    </Link>
-                </div>
-            );
-        },
-    },
-    {
-        accessorKey: "delete",
-        header: "Delete",
-        cell: ({ row }) => {
-            const result = row.original as IResult;
+			return <div>{result.participant.gender === "MALE" ? <FaMale size={25} /> : <FaFemale size={25} />}</div>;
+		},
+	},
+	{
+		accessorKey: "result",
+		header: "Result",
+		cell: ({ row }) => {
+			const result = row.original as IResult;
 
-            function handleDelete() {
-                console.log("delete result with id: ", result.id);
+			return <div>{resultConversion(result)}</div>;
+		},
+	},
+	{
+		accessorKey: "edit",
+		header: "Edit",
+		cell: ({ row }) => {
+			const result = row.original as IResult;
+			return (
+				<div className="flex cursor-pointer transition-all hover:text-orange-500">
+					<Link to={`/resultForm`} state={result}>
+						<FaEdit size={22} />
+					</Link>
+				</div>
+			);
+		},
+	},
+	{
+		accessorKey: "delete",
+		header: "Delete",
+		cell: ({ row }) => {
+			const result = row.original as IResult;
 
-                if (!result.id) {
-                    return;
-                }
+			function handleDelete() {
+				console.log("delete result with id: ", result.id);
 
-                deleteResult(result.id)
-                    .then(() => {
-                        toast({
-                            title: "Result deleted!",
-                            description: `We have successfully deleted the result with id: ${result.id}`,
-                        });
-                        window.location.reload();
-                        return;
-                    })
-                    .catch((error) => {
-                        console.log(error.response.data.message);
+				if (!result.id) {
+					return;
+				}
 
-                        toast({
-                            title: "Oh no! Something went wrong!",
-                            description: `${error.response.data.message}`,
-                            variant: "destructive",
-                        });
-                    });
-            }
+				deleteResult(result.id)
+					.then(() => {
+						toast({
+							title: "Result deleted!",
+							description: `We have successfully deleted the result with id: ${result.id}`,
+						});
+						window.location.reload();
+						return;
+					})
+					.catch((error) => {
+						console.log(error.response.data.message);
 
-            return (
-                <div className="flex  hover:text-orange-500 transition-all cursor-pointer">
-                    <MdDeleteForever size={22} onClick={handleDelete} />
-                </div>
-            );
-        },
-    },
+						toast({
+							title: "Oh no! Something went wrong!",
+							description: `${error.response.data.message}`,
+							variant: "destructive",
+						});
+					});
+			}
+
+			return (
+				<div className="flex cursor-pointer transition-all hover:text-orange-500">
+					<MdDeleteForever size={22} onClick={handleDelete} />
+				</div>
+			);
+		},
+	},
 ];
