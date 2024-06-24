@@ -26,7 +26,7 @@ const FormSchema = z.object({
 	participant: z.number().min(1, {
 		message: "Participant must be selected.",
 	}),
-	result: z.string().min(1, {
+	result: z.number().min(1, {
 		message: "Result must be at least 1.",
 	}),
 });
@@ -66,7 +66,7 @@ export default function ResultsFormPage() {
 		defaultValues: {
 			discipline: result ? result?.discipline.id : undefined,
 			participant: result ? result?.participant.id : undefined,
-			result: String(result?.result) || "",
+			result: result?.result || 0,
 		},
 	});
 
@@ -203,7 +203,7 @@ export default function ResultsFormPage() {
 									<FormItem>
 										<FormLabel>Result {resultTypeDictionary(resultType)}</FormLabel>
 										<FormControl>
-											<Input placeholder="Type Result..." type="number" {...field} />
+											<Input placeholder="Type Result..." type="number" {...field} min={0} onChange={(e) => field.onChange(Number(e.target.value))} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
