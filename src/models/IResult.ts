@@ -5,5 +5,5 @@ export interface IResult {
     id?: number;
     discipline: IDiscipline;
     participant: IParticipant;
-    result: string;
+    result: number;
 }
