@@ -44,7 +44,6 @@ export default function ParticipantsPage() {
 	}, [filterBy]);
 
 	console.log(participants);
-	
 
 	useEffect(() => {
 		const queryParams = new URLSearchParams({
@@ -78,7 +77,7 @@ export default function ParticipantsPage() {
 	return (
 		<>
 			<div className="flex flex-col gap-4">
-				<h2 className="mb-5 text-pretty text-center text-3xl font-bold sm:text-5xl">Participants</h2>
+				<h2 className="mb-5 text-pretty py-4 text-center text-3xl font-bold">Participants</h2>
 				{participants && (
 					<>
 						<div className="flex justify-between">

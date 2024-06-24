@@ -63,28 +63,11 @@ export default function ResultsPage() {
 	return (
 		<>
 			<div className="flex flex-col gap-4">
-				<h2 className="mb-5 text-pretty text-center text-3xl font-bold sm:text-5xl">Results</h2>
+				<h2 className="mb-5 text-pretty py-4 text-center text-3xl font-bold">Results</h2>
 				{results && (
 					<>
 						<div className="flex flex-wrap justify-between">
 							<div className="flex flex-wrap gap-10">
-								{/* <Select
-									onValueChange={(value) => {
-										setPagination((prevState) => ({ ...prevState, pageIndex: 0 }));
-										setSort((prevState) => ({ ...prevState, sortBy: value }));
-									}}
-								>
-									<SelectTrigger className="w-[140px] bg-gray-100">
-										<SelectValue placeholder="Sort By" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="id">ID</SelectItem>
-										<SelectItem value="name">Name</SelectItem>
-										<SelectItem value="gender">Gender</SelectItem>
-										<SelectItem value="club">Club</SelectItem>
-									</SelectContent>
-								</Select> */}
-
 								<div className="flex gap-2">
 									<Select
 										onValueChange={(value) => {
