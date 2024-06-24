@@ -66,7 +66,7 @@ export default function ResultsFormPage() {
 		defaultValues: {
 			discipline: result ? result?.discipline.id : undefined,
 			participant: result ? result?.participant.id : undefined,
-			result: result?.result || "",
+			result: String(result?.result) || "",
 		},
 	});
 
@@ -84,7 +84,7 @@ export default function ResultsFormPage() {
 		const newResult = {
 			disciplineId: data.discipline,
 			participantId: data.participant,
-			result: data.result,
+			result: Number(data.result),
 		} as IResultRequest;
 
 		console.log(result);
